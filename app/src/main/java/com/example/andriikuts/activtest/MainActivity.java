@@ -2,12 +2,17 @@ package com.example.andriikuts.activtest;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+
+
 
 public class MainActivity extends AppCompatActivity {
     private MapView mapView;
@@ -20,6 +25,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+
+
+        Point origin = Point.fromLngLat(-77.03613, 38.90992);
+        Point destination = Point.fromLngLat(-77.0365, 38.8977);
+
+        NavigationRoute route = NavigationRoute.builder(this)
+                .accessToken(Mapbox.getAccessToken())
+                .origin(origin)
+                .destination(destination)
+                .build();
+//                .getRoute(new Callback<DirectionsResponse>() {
+//                    @Override
+//                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+//
+//                    }
+//                });
+        boolean simulateRoute = true;
+
+        NavigationLauncherOptions options = NavigationLauncherOptions.builder()
+                .directionsRoute(route) // Fetched from NavigationRoute
+                .shouldSimulateRoute(simulateRoute)
+                .build();
+
+        NavigationLauncher.startNavigation(this, options);
     }
 
     @Override
